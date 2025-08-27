@@ -12,6 +12,7 @@ edition = "2021"
 rust-version = "1.72"
 
 [dependencies]
+rs-bitsong-proto = { path = "../rs-bitsong-proto", default-features = false }
 cosmos-sdk-proto = { version = "0.28.0", default-features = false,features = ["std"], git = "https://github.com/permissionlessweb/cosmos-rust" }
 ecdsa = "0.16"
 eyre = "0.6"

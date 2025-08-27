@@ -1,14 +1,28 @@
 [package]
-name = "rust-proto-gen"
-version = "0.1.0"
-authors = [ ""]
-edition = "2018"
+authors = [
+    "Supanat Potiwarakorn <boss@osmosis.team>",
+    "Justin Kilpatrick <justin@althea.net>",
+    "Tony Arcieri <tony@iqlusion.io>",
+]
+edition = "2021"
+name = "proto-build"
 publish = false
-rust-version = "1.75"
+version = "0.1.0"
 
 [dependencies]
+heck = "0.4.0"
+itertools = "0.10.3"
+log = "0.4.17"
+pretty_env_logger = "0.4.0"
+prettyplease = "0.1.16"
+proc-macro2 = "1.0.52"
 prost = "0.14.1"
-tonic = "0.14.1" 
-tonic-prost-build = "0.14.1"
+prost-build = "0.14.1"
+prost-types = "0.14.1"
+quote = "1.0.26"
 regex = "1"
+schemars = "0.8.4"
+syn = { version = "1.0.98", features = ["full", "parsing", "extra-traits"] }
+tonic = "0.14.1"
+tonic-build = "0.14.1"
 walkdir = "2"

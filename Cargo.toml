@@ -3,5 +3,6 @@ resolver = "2"
 members = [
     "rust-proto-gen",
     "rs-bitsong-proto",
-    # "cosmrs"
+    "rs-bitsong-derive",
+    "bitsong-rs",
 ]

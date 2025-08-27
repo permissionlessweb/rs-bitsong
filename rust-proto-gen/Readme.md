@@ -1,5 +1,3 @@
-# Rust Proto Gen
+# Proto-Build
 
-```sh
-cargo run --package rust-proto-gen --bin rust-proto-gen 
-```
+forked from [Osmosis-Rust](https://github.com/osmosis-labs/osmosis-rust/blob/main/Cargo.toml)
