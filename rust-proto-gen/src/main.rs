@@ -1,5 +1,5 @@
 //! Build CosmosSDK/Wasmd proto files. This build script clones the CosmosSDK version
-//! specified in the COSMOS_SDK_REV constant and then uses that to build the required
+//! specified in the GO_BITSONG_REV constant and then uses that to build the required
 //! proto files for further compilation. This is based on the proto-compiler code
 //! in github.com/informalsystems/ibc-rs
 
@@ -21,6 +21,7 @@ static QUIET: AtomicBool = AtomicBool::new(false);
 
 /// The Cosmos SDK commit or tag to be cloned and used to build the proto files
 const COSMOS_SDK_REV: &str = "v0.53.0";
+const GO_BITSONG_REV: &str = "v0.23.0";
 
 /// The wasmd commit or tag to be cloned and used to build the proto files
 // const WASMD_REV: &str = "v0.52.0";
@@ -29,9 +30,9 @@ const COSMOS_SDK_REV: &str = "v0.53.0";
 // working directory.
 
 /// The directory generated cosmos-sdk proto files go into in this repo
-const RS_BITSONG_PROTO_DIR: &str = "../rs-bitsong-sdk/src/prost/";
+const RS_BITSONG_PROTO_DIR: &str = "../rs-bitsong-proto/src/prost/";
 /// Directory where the root sdk is located is located
-const BITSONG_DIR: &str = "../../../";
+const BITSONG_DIR: &str = "../submodules/go-bitsong";
 // /// Directory where the submodule is located
 // const WASMD_DIR: &str = "../wasmd";
 /// A temporary directory for proto building
@@ -68,7 +69,7 @@ fn main() {
         fs::remove_dir_all(tmp_build_dir.clone()).unwrap();
     }
 
-    let temp_sdk_dir = tmp_build_dir.join("rs-bitsong-sdk");
+    let temp_sdk_dir = tmp_build_dir.join("rs-bitsong-proto");
     // let temp_wasmd_dir = tmp_build_dir.join("wasmd");
 
     fs::create_dir_all(&temp_sdk_dir).unwrap();
@@ -80,7 +81,7 @@ fn main() {
     compile_sdk_protos_and_services(&temp_sdk_dir);
     // compile_wasmd_proto_and_services(&temp_wasmd_dir);
 
-    copy_generated_files(&temp_sdk_dir, &proto_dir.join("rs-bitsong-sdk"));
+    copy_generated_files(&temp_sdk_dir, &proto_dir.join("rs-bitsong-proto"));
     // copy_generated_files(&temp_wasmd_dir, &proto_dir.join("wasmd"));
 
     apply_patches(&proto_dir);
@@ -90,8 +91,8 @@ fn main() {
 
     if is_github() {
         println!(
-            "Rebuild protos with proto-build (rs-bitsong-sdk rev: {},  ))",
-            COSMOS_SDK_REV
+            "Rebuild protos with proto-build (rs-bitsong-proto rev: {},  ))",
+            GO_BITSONG_REV
         );
     }
 }
@@ -174,21 +175,21 @@ fn run_rustfmt(dir: &Path) {
     run_cmd("rustfmt", args);
 }
 
-// fn update_submodules() {
-//     info!("Updating cosmos/cosmos-sdk submodule...");
-//     run_git(["submodule", "update", "--init"]);
-//     run_git(["-C", BITSONG_DIR, "fetch"]);
-//     run_git(["-C", BITSONG_DIR, "reset", "--hard", COSMOS_SDK_REV]);
+fn update_submodules() {
+    info!("Updating cosmos/cosmos-sdk submodule...");
+    run_git(["submodule", "update", "--init"]);
+    run_git(["-C", BITSONG_DIR, "fetch"]);
+    run_git(["-C", BITSONG_DIR, "reset", "--hard", GO_BITSONG_REV]);
 
-//     info!("Updating wasmd submodule...");
-//     run_git(["submodule", "update", "--init"]);
-//     // run_git(["-C", WASMD_DIR, "fetch"]);
-//     // run_git(["-C", WASMD_DIR, "reset", "--hard", WASMD_REV]);
-// }
+    // info!("Updating wasmd submodule...");
+    // run_git(["submodule", "update", "--init"]);
+    // run_git(["-C", WASMD_DIR, "fetch"]);
+    // run_git(["-C", WASMD_DIR, "reset", "--hard", WASMD_REV]);
+}
 
 fn output_sdk_version(out_dir: &Path) {
-    let path = out_dir.join("COSMOS_SDK_COMMIT");
-    fs::write(path, COSMOS_SDK_REV).unwrap();
+    let path = out_dir.join("GO_BITSONG_COMMIT");
+    fs::write(path, GO_BITSONG_REV).unwrap();
 }
 
 // fn output_wasmd_version(out_dir: &Path) {
@@ -323,6 +324,17 @@ fn copy_and_patch(src: impl AsRef<Path>, dest: impl AsRef<Path>) -> io::Result<(
         ("alloc::vec::alloc", "alloc"),
         // workaround to keep rustfmt from having a freak out
         ("__ = ", "__ ="),
+        // Fix tonic 0.14+ BoxBody privacy issue - replace with proper body type
+        ("tonic::body::BoxBody", "tonic::body::Body"),
+        // Fix tonic 0.14+ codec location - ProstCodec moved to tonic-prost crate
+        ("tonic::codec::ProstCodec", "tonic_prost::ProstCodec"),
+        // Fix empty_body function - it's now Body::empty()
+        ("empty_body\\(\\)", "tonic::body::Body::empty()"),
+        // Fix UnsyncBoxBody references that weren't caught by BoxBody replacement
+        (
+            "http_body_util::combinators::UnsyncBoxBody<prost::bytes::Bytes, tonic::Status>",
+            "tonic::body::Body",
+        ),
     ];
 
     // Skip proto files belonging to `EXCLUDED_PROTO_PACKAGES`

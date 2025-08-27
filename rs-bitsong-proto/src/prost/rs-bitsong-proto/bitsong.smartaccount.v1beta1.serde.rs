@@ -21,6 +21,7 @@ impl serde::Serialize for AccountAuthenticator {
             .serialize_struct("bitsong.smartaccount.v1beta1.AccountAuthenticator", len)?;
         if self.id != 0 {
             #[allow(clippy::needless_borrow)]
+            #[allow(clippy::needless_borrows_for_generic_args)]
             struct_ser
                 .serialize_field("id", alloc::string::ToString::to_string(&self.id).as_str())?;
         }
@@ -29,6 +30,7 @@ impl serde::Serialize for AccountAuthenticator {
         }
         if !self.config.is_empty() {
             #[allow(clippy::needless_borrow)]
+            #[allow(clippy::needless_borrows_for_generic_args)]
             struct_ser.serialize_field(
                 "config",
                 pbjson::private::base64::encode(&self.config).as_str(),
@@ -141,6 +143,112 @@ impl<'de> serde::Deserialize<'de> for AccountAuthenticator {
         }
         deserializer.deserialize_struct(
             "bitsong.smartaccount.v1beta1.AccountAuthenticator",
+            FIELDS,
+            GeneratedVisitor,
+        )
+    }
+}
+#[cfg(feature = "serde")]
+impl serde::Serialize for AgAuthData {
+    #[allow(deprecated)]
+    fn serialize<S>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use serde::ser::SerializeStruct;
+        let mut len = 0;
+        if !self.data.is_empty() {
+            len += 1;
+        }
+        let mut struct_ser =
+            serializer.serialize_struct("bitsong.smartaccount.v1beta1.AgAuthData", len)?;
+        if !self.data.is_empty() {
+            #[allow(clippy::needless_borrow)]
+            #[allow(clippy::needless_borrows_for_generic_args)]
+            struct_ser
+                .serialize_field("data", pbjson::private::base64::encode(&self.data).as_str())?;
+        }
+        struct_ser.end()
+    }
+}
+#[cfg(feature = "serde")]
+impl<'de> serde::Deserialize<'de> for AgAuthData {
+    #[allow(deprecated)]
+    fn deserialize<D>(deserializer: D) -> core::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        const FIELDS: &[&str] = &["data"];
+
+        #[allow(clippy::enum_variant_names)]
+        enum GeneratedField {
+            Data,
+        }
+        #[cfg(feature = "serde")]
+        impl<'de> serde::Deserialize<'de> for GeneratedField {
+            fn deserialize<D>(deserializer: D) -> core::result::Result<GeneratedField, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct GeneratedVisitor;
+
+                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
+                    type Value = GeneratedField;
+
+                    fn expecting(
+                        &self,
+                        formatter: &mut core::fmt::Formatter<'_>,
+                    ) -> core::fmt::Result {
+                        write!(formatter, "expected one of: {:?}", &FIELDS)
+                    }
+
+                    #[allow(unused_variables)]
+                    fn visit_str<E>(self, value: &str) -> core::result::Result<GeneratedField, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        match value {
+                            "data" => Ok(GeneratedField::Data),
+                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
+                        }
+                    }
+                }
+                deserializer.deserialize_identifier(GeneratedVisitor)
+            }
+        }
+        struct GeneratedVisitor;
+        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
+            type Value = AgAuthData;
+
+            fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                formatter.write_str("struct bitsong.smartaccount.v1beta1.AgAuthData")
+            }
+
+            fn visit_map<V>(self, mut map_: V) -> core::result::Result<AgAuthData, V::Error>
+            where
+                V: serde::de::MapAccess<'de>,
+            {
+                let mut data__ = None;
+                while let Some(k) = map_.next_key()? {
+                    match k {
+                        GeneratedField::Data => {
+                            if data__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("data"));
+                            }
+                            data__ = Some(
+                                map_.next_value::<::pbjson::private::BytesDeserialize<_>>()?
+                                    .0,
+                            );
+                        }
+                    }
+                }
+                Ok(AgAuthData {
+                    data: data__.unwrap_or_default(),
+                })
+            }
+        }
+        deserializer.deserialize_struct(
+            "bitsong.smartaccount.v1beta1.AgAuthData",
             FIELDS,
             GeneratedVisitor,
         )
@@ -263,6 +371,140 @@ impl<'de> serde::Deserialize<'de> for AuthenticatorData {
     }
 }
 #[cfg(feature = "serde")]
+impl serde::Serialize for BlsConfig {
+    #[allow(deprecated)]
+    fn serialize<S>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use serde::ser::SerializeStruct;
+        let mut len = 0;
+        if !self.pubkeys.is_empty() {
+            len += 1;
+        }
+        if self.threshold != 0 {
+            len += 1;
+        }
+        let mut struct_ser =
+            serializer.serialize_struct("bitsong.smartaccount.v1beta1.BlsConfig", len)?;
+        if !self.pubkeys.is_empty() {
+            struct_ser.serialize_field(
+                "pubkeys",
+                &self
+                    .pubkeys
+                    .iter()
+                    .map(pbjson::private::base64::encode)
+                    .collect::<alloc::vec::Vec<_>>(),
+            )?;
+        }
+        if self.threshold != 0 {
+            #[allow(clippy::needless_borrow)]
+            #[allow(clippy::needless_borrows_for_generic_args)]
+            struct_ser.serialize_field(
+                "threshold",
+                alloc::string::ToString::to_string(&self.threshold).as_str(),
+            )?;
+        }
+        struct_ser.end()
+    }
+}
+#[cfg(feature = "serde")]
+impl<'de> serde::Deserialize<'de> for BlsConfig {
+    #[allow(deprecated)]
+    fn deserialize<D>(deserializer: D) -> core::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        const FIELDS: &[&str] = &["pubkeys", "threshold"];
+
+        #[allow(clippy::enum_variant_names)]
+        enum GeneratedField {
+            Pubkeys,
+            Threshold,
+        }
+        #[cfg(feature = "serde")]
+        impl<'de> serde::Deserialize<'de> for GeneratedField {
+            fn deserialize<D>(deserializer: D) -> core::result::Result<GeneratedField, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct GeneratedVisitor;
+
+                impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
+                    type Value = GeneratedField;
+
+                    fn expecting(
+                        &self,
+                        formatter: &mut core::fmt::Formatter<'_>,
+                    ) -> core::fmt::Result {
+                        write!(formatter, "expected one of: {:?}", &FIELDS)
+                    }
+
+                    #[allow(unused_variables)]
+                    fn visit_str<E>(self, value: &str) -> core::result::Result<GeneratedField, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        match value {
+                            "pubkeys" => Ok(GeneratedField::Pubkeys),
+                            "threshold" => Ok(GeneratedField::Threshold),
+                            _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
+                        }
+                    }
+                }
+                deserializer.deserialize_identifier(GeneratedVisitor)
+            }
+        }
+        struct GeneratedVisitor;
+        impl<'de> serde::de::Visitor<'de> for GeneratedVisitor {
+            type Value = BlsConfig;
+
+            fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                formatter.write_str("struct bitsong.smartaccount.v1beta1.BlsConfig")
+            }
+
+            fn visit_map<V>(self, mut map_: V) -> core::result::Result<BlsConfig, V::Error>
+            where
+                V: serde::de::MapAccess<'de>,
+            {
+                let mut pubkeys__ = None;
+                let mut threshold__ = None;
+                while let Some(k) = map_.next_key()? {
+                    match k {
+                        GeneratedField::Pubkeys => {
+                            if pubkeys__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("pubkeys"));
+                            }
+                            pubkeys__ =
+                                Some(map_.next_value::<alloc::vec::Vec<::pbjson::private::BytesDeserialize<_>>>()?
+                                    .into_iter().map(|x| x.0).collect())
+                            ;
+                        }
+                        GeneratedField::Threshold => {
+                            if threshold__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("threshold"));
+                            }
+                            threshold__ = Some(
+                                map_.next_value::<::pbjson::private::NumberDeserialize<_>>()?
+                                    .0,
+                            );
+                        }
+                    }
+                }
+                Ok(BlsConfig {
+                    pubkeys: pubkeys__.unwrap_or_default(),
+                    threshold: threshold__.unwrap_or_default(),
+                })
+            }
+        }
+        deserializer.deserialize_struct(
+            "bitsong.smartaccount.v1beta1.BlsConfig",
+            FIELDS,
+            GeneratedVisitor,
+        )
+    }
+}
+#[cfg(feature = "serde")]
 impl serde::Serialize for GenesisState {
     #[allow(deprecated)]
     fn serialize<S>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error>
@@ -287,6 +529,7 @@ impl serde::Serialize for GenesisState {
         }
         if self.next_authenticator_id != 0 {
             #[allow(clippy::needless_borrow)]
+            #[allow(clippy::needless_borrows_for_generic_args)]
             struct_ser.serialize_field(
                 "nextAuthenticatorId",
                 alloc::string::ToString::to_string(&self.next_authenticator_id).as_str(),
@@ -435,6 +678,7 @@ impl serde::Serialize for GetAuthenticatorRequest {
         }
         if self.authenticator_id != 0 {
             #[allow(clippy::needless_borrow)]
+            #[allow(clippy::needless_borrows_for_generic_args)]
             struct_ser.serialize_field(
                 "authenticatorId",
                 alloc::string::ToString::to_string(&self.authenticator_id).as_str(),
@@ -888,6 +1132,7 @@ impl serde::Serialize for MsgAddAuthenticator {
         }
         if !self.data.is_empty() {
             #[allow(clippy::needless_borrow)]
+            #[allow(clippy::needless_borrows_for_generic_args)]
             struct_ser
                 .serialize_field("data", pbjson::private::base64::encode(&self.data).as_str())?;
         }
@@ -1130,6 +1375,7 @@ impl serde::Serialize for MsgRemoveAuthenticator {
         }
         if self.id != 0 {
             #[allow(clippy::needless_borrow)]
+            #[allow(clippy::needless_borrows_for_generic_args)]
             struct_ser
                 .serialize_field("id", alloc::string::ToString::to_string(&self.id).as_str())?;
         }
@@ -1560,6 +1806,7 @@ impl serde::Serialize for Params {
             serializer.serialize_struct("bitsong.smartaccount.v1beta1.Params", len)?;
         if self.maximum_unauthenticated_gas != 0 {
             #[allow(clippy::needless_borrow)]
+            #[allow(clippy::needless_borrows_for_generic_args)]
             struct_ser.serialize_field(
                 "maximumUnauthenticatedGas",
                 alloc::string::ToString::to_string(&self.maximum_unauthenticated_gas).as_str(),
@@ -1891,6 +2138,9 @@ impl serde::Serialize for TxExtension {
         if !self.selected_authenticators.is_empty() {
             len += 1;
         }
+        if self.agg_auth.is_some() {
+            len += 1;
+        }
         let mut struct_ser =
             serializer.serialize_struct("bitsong.smartaccount.v1beta1.TxExtension", len)?;
         if !self.selected_authenticators.is_empty() {
@@ -1903,6 +2153,9 @@ impl serde::Serialize for TxExtension {
                     .collect::<alloc::vec::Vec<_>>(),
             )?;
         }
+        if let Some(v) = self.agg_auth.as_ref() {
+            struct_ser.serialize_field("aggAuth", v)?;
+        }
         struct_ser.end()
     }
 }
@@ -1913,11 +2166,17 @@ impl<'de> serde::Deserialize<'de> for TxExtension {
     where
         D: serde::Deserializer<'de>,
     {
-        const FIELDS: &[&str] = &["selected_authenticators", "selectedAuthenticators"];
+        const FIELDS: &[&str] = &[
+            "selected_authenticators",
+            "selectedAuthenticators",
+            "agg_auth",
+            "aggAuth",
+        ];
 
         #[allow(clippy::enum_variant_names)]
         enum GeneratedField {
             SelectedAuthenticators,
+            AggAuth,
         }
         #[cfg(feature = "serde")]
         impl<'de> serde::Deserialize<'de> for GeneratedField {
@@ -1946,6 +2205,7 @@ impl<'de> serde::Deserialize<'de> for TxExtension {
                             "selectedAuthenticators" | "selected_authenticators" => {
                                 Ok(GeneratedField::SelectedAuthenticators)
                             }
+                            "aggAuth" | "agg_auth" => Ok(GeneratedField::AggAuth),
                             _ => Err(serde::de::Error::unknown_field(value, FIELDS)),
                         }
                     }
@@ -1966,6 +2226,7 @@ impl<'de> serde::Deserialize<'de> for TxExtension {
                 V: serde::de::MapAccess<'de>,
             {
                 let mut selected_authenticators__ = None;
+                let mut agg_auth__ = None;
                 while let Some(k) = map_.next_key()? {
                     match k {
                         GeneratedField::SelectedAuthenticators => {
@@ -1979,10 +2240,17 @@ impl<'de> serde::Deserialize<'de> for TxExtension {
                                     .into_iter().map(|x| x.0).collect())
                             ;
                         }
+                        GeneratedField::AggAuth => {
+                            if agg_auth__.is_some() {
+                                return Err(serde::de::Error::duplicate_field("aggAuth"));
+                            }
+                            agg_auth__ = map_.next_value()?;
+                        }
                     }
                 }
                 Ok(TxExtension {
                     selected_authenticators: selected_authenticators__.unwrap_or_default(),
+                    agg_auth: agg_auth__,
                 })
             }
         }

@@ -1,0 +1,12 @@
+[submodule "submodules/ibc-go"]
+	path = submodules/ibc-go
+	url = https://github.com/cosmos/ibc-go.git
+[submodule "submodules/go-bitsong"]
+	path = submodules/go-bitsong
+	url = https://github.com/bitsongofficial/go-bitsong.git
+[submodule "submodules/wasmd"]
+	path = submodules/wasmd
+	url = https://github.com/CosmWasm/wasmd.git
+[submodule "submodules/cosmos-sdk"]
+	path = submodules/cosmos-sdk
+	url = https://github.com/cosmos/cosmos-sdk.git

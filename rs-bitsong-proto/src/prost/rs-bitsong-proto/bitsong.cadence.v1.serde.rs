@@ -1055,6 +1055,7 @@ impl serde::Serialize for Params {
         let mut struct_ser = serializer.serialize_struct("bitsong.cadence.v1.Params", len)?;
         if self.contract_gas_limit != 0 {
             #[allow(clippy::needless_borrow)]
+            #[allow(clippy::needless_borrows_for_generic_args)]
             struct_ser.serialize_field(
                 "contractGasLimit",
                 alloc::string::ToString::to_string(&self.contract_gas_limit).as_str(),

@@ -474,7 +474,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rs-bitsong-sdk"
+name = "rs-bitsong-proto"
 version = "0.27.0"
 dependencies = [
  "informalsystems-pbjson",

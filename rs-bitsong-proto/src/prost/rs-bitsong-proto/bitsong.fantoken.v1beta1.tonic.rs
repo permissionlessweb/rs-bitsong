@@ -23,7 +23,7 @@ pub mod query_client {
     }
     impl<T> QueryClient<T>
     where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
         T::ResponseBody: Body<Data = Bytes> + Send + 'static,
         <T::ResponseBody as Body>::Error: Into<StdError> + Send,
@@ -44,12 +44,12 @@ pub mod query_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
                 Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<http::Request<tonic::body::BoxBody>>>::Error:
+            <T as tonic::codegen::Service<http::Request<tonic::body::Body>>>::Error:
                 Into<StdError> + Send + Sync,
         {
             QueryClient::new(InterceptedService::new(inner, interceptor))
@@ -85,6 +85,48 @@ pub mod query_client {
             self.inner = self.inner.max_encoding_message_size(limit);
             self
         }
+        pub async fn fan_token(
+            &mut self,
+            request: impl tonic::IntoRequest<super::QueryFanTokenRequest>,
+        ) -> core::result::Result<tonic::Response<super::QueryFanTokenResponse>, tonic::Status>
+        {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    alloc::format!("Service was not ready: {}", e.into()),
+                )
+            })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path =
+                http::uri::PathAndQuery::from_static("/bitsong.fantoken.v1beta1.Query/FanToken");
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "bitsong.fantoken.v1beta1.Query",
+                "FanToken",
+            ));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn fan_tokens(
+            &mut self,
+            request: impl tonic::IntoRequest<super::QueryFanTokensRequest>,
+        ) -> core::result::Result<tonic::Response<super::QueryFanTokensResponse>, tonic::Status>
+        {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    alloc::format!("Service was not ready: {}", e.into()),
+                )
+            })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path =
+                http::uri::PathAndQuery::from_static("/bitsong.fantoken.v1beta1.Query/FanTokens");
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "bitsong.fantoken.v1beta1.Query",
+                "FanTokens",
+            ));
+            self.inner.unary(req, path, codec).await
+        }
         pub async fn params(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryParamsRequest>,
@@ -96,58 +138,12 @@ pub mod query_client {
                     alloc::format!("Service was not ready: {}", e.into()),
                 )
             })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path =
-                http::uri::PathAndQuery::from_static("/bitsong.smartaccount.v1beta1.Query/Params");
+                http::uri::PathAndQuery::from_static("/bitsong.fantoken.v1beta1.Query/Params");
             let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new(
-                "bitsong.smartaccount.v1beta1.Query",
-                "Params",
-            ));
-            self.inner.unary(req, path, codec).await
-        }
-        pub async fn get_authenticator(
-            &mut self,
-            request: impl tonic::IntoRequest<super::GetAuthenticatorRequest>,
-        ) -> core::result::Result<tonic::Response<super::GetAuthenticatorResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    alloc::format!("Service was not ready: {}", e.into()),
-                )
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/bitsong.smartaccount.v1beta1.Query/GetAuthenticator",
-            );
-            let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new(
-                "bitsong.smartaccount.v1beta1.Query",
-                "GetAuthenticator",
-            ));
-            self.inner.unary(req, path, codec).await
-        }
-        pub async fn get_authenticators(
-            &mut self,
-            request: impl tonic::IntoRequest<super::GetAuthenticatorsRequest>,
-        ) -> core::result::Result<tonic::Response<super::GetAuthenticatorsResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    alloc::format!("Service was not ready: {}", e.into()),
-                )
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/bitsong.smartaccount.v1beta1.Query/GetAuthenticators",
-            );
-            let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new(
-                "bitsong.smartaccount.v1beta1.Query",
-                "GetAuthenticators",
-            ));
+            req.extensions_mut()
+                .insert(GrpcMethod::new("bitsong.fantoken.v1beta1.Query", "Params"));
             self.inner.unary(req, path, codec).await
         }
     }
@@ -160,34 +156,32 @@ pub mod query_server {
     /// Generated trait containing gRPC methods that should be implemented for use with QueryServer.
     #[async_trait]
     pub trait Query: Send + Sync + 'static {
+        async fn fan_token(
+            &self,
+            request: tonic::Request<super::QueryFanTokenRequest>,
+        ) -> core::result::Result<tonic::Response<super::QueryFanTokenResponse>, tonic::Status>;
+        async fn fan_tokens(
+            &self,
+            request: tonic::Request<super::QueryFanTokensRequest>,
+        ) -> core::result::Result<tonic::Response<super::QueryFanTokensResponse>, tonic::Status>;
         async fn params(
             &self,
             request: tonic::Request<super::QueryParamsRequest>,
         ) -> core::result::Result<tonic::Response<super::QueryParamsResponse>, tonic::Status>;
-        async fn get_authenticator(
-            &self,
-            request: tonic::Request<super::GetAuthenticatorRequest>,
-        ) -> core::result::Result<tonic::Response<super::GetAuthenticatorResponse>, tonic::Status>;
-        async fn get_authenticators(
-            &self,
-            request: tonic::Request<super::GetAuthenticatorsRequest>,
-        ) -> core::result::Result<tonic::Response<super::GetAuthenticatorsResponse>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct QueryServer<T: Query> {
-        inner: _Inner<T>,
+        inner: Arc<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
         max_decoding_message_size: Option<usize>,
         max_encoding_message_size: Option<usize>,
     }
-    struct _Inner<T>(Arc<T>);
     impl<T: Query> QueryServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
         pub fn from_arc(inner: Arc<T>) -> Self {
-            let inner = _Inner(inner);
             Self {
                 inner,
                 accept_compression_encodings: Default::default(),
@@ -237,7 +231,7 @@ pub mod query_server {
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
-        type Response = http::Response<tonic::body::BoxBody>;
+        type Response = http::Response<tonic::body::Body>;
         type Error = std::convert::Infallible;
         type Future = BoxFuture<Self::Response, Self::Error>;
         fn poll_ready(
@@ -247,9 +241,83 @@ pub mod query_server {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
-            let inner = self.inner.clone();
             match req.uri().path() {
-                "/bitsong.smartaccount.v1beta1.Query/Params" => {
+                "/bitsong.fantoken.v1beta1.Query/FanToken" => {
+                    #[allow(non_camel_case_types)]
+                    struct FanTokenSvc<T: Query>(pub Arc<T>);
+                    impl<T: Query> tonic::server::UnaryService<super::QueryFanTokenRequest> for FanTokenSvc<T> {
+                        type Response = super::QueryFanTokenResponse;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::QueryFanTokenRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move { <T as Query>::fan_token(&inner, request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = FanTokenSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/bitsong.fantoken.v1beta1.Query/FanTokens" => {
+                    #[allow(non_camel_case_types)]
+                    struct FanTokensSvc<T: Query>(pub Arc<T>);
+                    impl<T: Query> tonic::server::UnaryService<super::QueryFanTokensRequest> for FanTokensSvc<T> {
+                        type Response = super::QueryFanTokensResponse;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::QueryFanTokensRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut =
+                                async move { <T as Query>::fan_tokens(&inner, request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = FanTokensSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/bitsong.fantoken.v1beta1.Query/Params" => {
                     #[allow(non_camel_case_types)]
                     struct ParamsSvc<T: Query>(pub Arc<T>);
                     impl<T: Query> tonic::server::UnaryService<super::QueryParamsRequest> for ParamsSvc<T> {
@@ -260,7 +328,7 @@ pub mod query_server {
                             request: tonic::Request<super::QueryParamsRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).params(request).await };
+                            let fut = async move { <T as Query>::params(&inner, request).await };
                             Box::pin(fut)
                         }
                     }
@@ -270,89 +338,8 @@ pub mod query_server {
                     let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
-                        let inner = inner.0;
                         let method = ParamsSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/bitsong.smartaccount.v1beta1.Query/GetAuthenticator" => {
-                    #[allow(non_camel_case_types)]
-                    struct GetAuthenticatorSvc<T: Query>(pub Arc<T>);
-                    impl<T: Query> tonic::server::UnaryService<super::GetAuthenticatorRequest>
-                        for GetAuthenticatorSvc<T>
-                    {
-                        type Response = super::GetAuthenticatorResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::GetAuthenticatorRequest>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).get_authenticator(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = GetAuthenticatorSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/bitsong.smartaccount.v1beta1.Query/GetAuthenticators" => {
-                    #[allow(non_camel_case_types)]
-                    struct GetAuthenticatorsSvc<T: Query>(pub Arc<T>);
-                    impl<T: Query> tonic::server::UnaryService<super::GetAuthenticatorsRequest>
-                        for GetAuthenticatorsSvc<T>
-                    {
-                        type Response = super::GetAuthenticatorsResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::GetAuthenticatorsRequest>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).get_authenticators(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = GetAuthenticatorsSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
+                        let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,
@@ -370,9 +357,12 @@ pub mod query_server {
                 _ => Box::pin(async move {
                     Ok(http::Response::builder()
                         .status(200)
-                        .header("grpc-status", "12")
-                        .header("content-type", "application/grpc")
-                        .body(empty_body())
+                        .header("grpc-status", tonic::Code::Unimplemented as i32)
+                        .header(
+                            http::header::CONTENT_TYPE,
+                            tonic::metadata::GRPC_CONTENT_TYPE,
+                        )
+                        .body(tonic::body::Body::empty())
                         .unwrap())
                 }),
             }
@@ -390,18 +380,8 @@ pub mod query_server {
             }
         }
     }
-    impl<T: Query> Clone for _Inner<T> {
-        fn clone(&self) -> Self {
-            Self(Arc::clone(&self.0))
-        }
-    }
-    impl<T: core::fmt::Debug> core::fmt::Debug for _Inner<T> {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            write!(f, "{:?}", self.0)
-        }
-    }
     impl<T: Query> tonic::server::NamedService for QueryServer<T> {
-        const NAME: &'static str = "bitsong.smartaccount.v1beta1.Query";
+        const NAME: &'static str = "bitsong.fantoken.v1beta1.Query";
     }
 }
 /// Generated client implementations.
@@ -428,7 +408,7 @@ pub mod msg_client {
     }
     impl<T> MsgClient<T>
     where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
         T::ResponseBody: Body<Data = Bytes> + Send + 'static,
         <T::ResponseBody as Body>::Error: Into<StdError> + Send,
@@ -446,12 +426,12 @@ pub mod msg_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
                 Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<http::Request<tonic::body::BoxBody>>>::Error:
+            <T as tonic::codegen::Service<http::Request<tonic::body::Body>>>::Error:
                 Into<StdError> + Send + Sync,
         {
             MsgClient::new(InterceptedService::new(inner, interceptor))
@@ -487,10 +467,61 @@ pub mod msg_client {
             self.inner = self.inner.max_encoding_message_size(limit);
             self
         }
-        pub async fn add_authenticator(
+        pub async fn issue(
             &mut self,
-            request: impl tonic::IntoRequest<super::MsgAddAuthenticator>,
-        ) -> core::result::Result<tonic::Response<super::MsgAddAuthenticatorResponse>, tonic::Status>
+            request: impl tonic::IntoRequest<super::MsgIssue>,
+        ) -> core::result::Result<tonic::Response<super::MsgIssueResponse>, tonic::Status> {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    alloc::format!("Service was not ready: {}", e.into()),
+                )
+            })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/bitsong.fantoken.v1beta1.Msg/Issue");
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("bitsong.fantoken.v1beta1.Msg", "Issue"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn mint(
+            &mut self,
+            request: impl tonic::IntoRequest<super::MsgMint>,
+        ) -> core::result::Result<tonic::Response<super::MsgMintResponse>, tonic::Status> {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    alloc::format!("Service was not ready: {}", e.into()),
+                )
+            })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/bitsong.fantoken.v1beta1.Msg/Mint");
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("bitsong.fantoken.v1beta1.Msg", "Mint"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn burn(
+            &mut self,
+            request: impl tonic::IntoRequest<super::MsgBurn>,
+        ) -> core::result::Result<tonic::Response<super::MsgBurnResponse>, tonic::Status> {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    alloc::format!("Service was not ready: {}", e.into()),
+                )
+            })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/bitsong.fantoken.v1beta1.Msg/Burn");
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("bitsong.fantoken.v1beta1.Msg", "Burn"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn disable_mint(
+            &mut self,
+            request: impl tonic::IntoRequest<super::MsgDisableMint>,
+        ) -> core::result::Result<tonic::Response<super::MsgDisableMintResponse>, tonic::Status>
         {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
@@ -498,45 +529,20 @@ pub mod msg_client {
                     alloc::format!("Service was not ready: {}", e.into()),
                 )
             })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/bitsong.smartaccount.v1beta1.Msg/AddAuthenticator",
-            );
+            let codec = tonic_prost::ProstCodec::default();
+            let path =
+                http::uri::PathAndQuery::from_static("/bitsong.fantoken.v1beta1.Msg/DisableMint");
             let mut req = request.into_request();
             req.extensions_mut().insert(GrpcMethod::new(
-                "bitsong.smartaccount.v1beta1.Msg",
-                "AddAuthenticator",
+                "bitsong.fantoken.v1beta1.Msg",
+                "DisableMint",
             ));
             self.inner.unary(req, path, codec).await
         }
-        pub async fn remove_authenticator(
+        pub async fn set_minter(
             &mut self,
-            request: impl tonic::IntoRequest<super::MsgRemoveAuthenticator>,
-        ) -> core::result::Result<
-            tonic::Response<super::MsgRemoveAuthenticatorResponse>,
-            tonic::Status,
-        > {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    alloc::format!("Service was not ready: {}", e.into()),
-                )
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/bitsong.smartaccount.v1beta1.Msg/RemoveAuthenticator",
-            );
-            let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new(
-                "bitsong.smartaccount.v1beta1.Msg",
-                "RemoveAuthenticator",
-            ));
-            self.inner.unary(req, path, codec).await
-        }
-        pub async fn set_active_state(
-            &mut self,
-            request: impl tonic::IntoRequest<super::MsgSetActiveState>,
-        ) -> core::result::Result<tonic::Response<super::MsgSetActiveStateResponse>, tonic::Status>
+            request: impl tonic::IntoRequest<super::MsgSetMinter>,
+        ) -> core::result::Result<tonic::Response<super::MsgSetMinterResponse>, tonic::Status>
         {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
@@ -544,15 +550,51 @@ pub mod msg_client {
                     alloc::format!("Service was not ready: {}", e.into()),
                 )
             })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/bitsong.smartaccount.v1beta1.Msg/SetActiveState",
-            );
+            let codec = tonic_prost::ProstCodec::default();
+            let path =
+                http::uri::PathAndQuery::from_static("/bitsong.fantoken.v1beta1.Msg/SetMinter");
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("bitsong.fantoken.v1beta1.Msg", "SetMinter"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn set_authority(
+            &mut self,
+            request: impl tonic::IntoRequest<super::MsgSetAuthority>,
+        ) -> core::result::Result<tonic::Response<super::MsgSetAuthorityResponse>, tonic::Status>
+        {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    alloc::format!("Service was not ready: {}", e.into()),
+                )
+            })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path =
+                http::uri::PathAndQuery::from_static("/bitsong.fantoken.v1beta1.Msg/SetAuthority");
             let mut req = request.into_request();
             req.extensions_mut().insert(GrpcMethod::new(
-                "bitsong.smartaccount.v1beta1.Msg",
-                "SetActiveState",
+                "bitsong.fantoken.v1beta1.Msg",
+                "SetAuthority",
             ));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn set_uri(
+            &mut self,
+            request: impl tonic::IntoRequest<super::MsgSetUri>,
+        ) -> core::result::Result<tonic::Response<super::MsgSetUriResponse>, tonic::Status>
+        {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    alloc::format!("Service was not ready: {}", e.into()),
+                )
+            })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static("/bitsong.fantoken.v1beta1.Msg/SetUri");
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("bitsong.fantoken.v1beta1.Msg", "SetUri"));
             self.inner.unary(req, path, codec).await
         }
     }
@@ -565,37 +607,48 @@ pub mod msg_server {
     /// Generated trait containing gRPC methods that should be implemented for use with MsgServer.
     #[async_trait]
     pub trait Msg: Send + Sync + 'static {
-        async fn add_authenticator(
+        async fn issue(
             &self,
-            request: tonic::Request<super::MsgAddAuthenticator>,
-        ) -> core::result::Result<tonic::Response<super::MsgAddAuthenticatorResponse>, tonic::Status>;
-        async fn remove_authenticator(
+            request: tonic::Request<super::MsgIssue>,
+        ) -> core::result::Result<tonic::Response<super::MsgIssueResponse>, tonic::Status>;
+        async fn mint(
             &self,
-            request: tonic::Request<super::MsgRemoveAuthenticator>,
-        ) -> core::result::Result<
-            tonic::Response<super::MsgRemoveAuthenticatorResponse>,
-            tonic::Status,
-        >;
-        async fn set_active_state(
+            request: tonic::Request<super::MsgMint>,
+        ) -> core::result::Result<tonic::Response<super::MsgMintResponse>, tonic::Status>;
+        async fn burn(
             &self,
-            request: tonic::Request<super::MsgSetActiveState>,
-        ) -> core::result::Result<tonic::Response<super::MsgSetActiveStateResponse>, tonic::Status>;
+            request: tonic::Request<super::MsgBurn>,
+        ) -> core::result::Result<tonic::Response<super::MsgBurnResponse>, tonic::Status>;
+        async fn disable_mint(
+            &self,
+            request: tonic::Request<super::MsgDisableMint>,
+        ) -> core::result::Result<tonic::Response<super::MsgDisableMintResponse>, tonic::Status>;
+        async fn set_minter(
+            &self,
+            request: tonic::Request<super::MsgSetMinter>,
+        ) -> core::result::Result<tonic::Response<super::MsgSetMinterResponse>, tonic::Status>;
+        async fn set_authority(
+            &self,
+            request: tonic::Request<super::MsgSetAuthority>,
+        ) -> core::result::Result<tonic::Response<super::MsgSetAuthorityResponse>, tonic::Status>;
+        async fn set_uri(
+            &self,
+            request: tonic::Request<super::MsgSetUri>,
+        ) -> core::result::Result<tonic::Response<super::MsgSetUriResponse>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct MsgServer<T: Msg> {
-        inner: _Inner<T>,
+        inner: Arc<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
         max_decoding_message_size: Option<usize>,
         max_encoding_message_size: Option<usize>,
     }
-    struct _Inner<T>(Arc<T>);
     impl<T: Msg> MsgServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
         pub fn from_arc(inner: Arc<T>) -> Self {
-            let inner = _Inner(inner);
             Self {
                 inner,
                 accept_compression_encodings: Default::default(),
@@ -645,7 +698,7 @@ pub mod msg_server {
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
-        type Response = http::Response<tonic::body::BoxBody>;
+        type Response = http::Response<tonic::body::Body>;
         type Error = std::convert::Infallible;
         type Future = BoxFuture<Self::Response, Self::Error>;
         fn poll_ready(
@@ -655,20 +708,19 @@ pub mod msg_server {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
-            let inner = self.inner.clone();
             match req.uri().path() {
-                "/bitsong.smartaccount.v1beta1.Msg/AddAuthenticator" => {
+                "/bitsong.fantoken.v1beta1.Msg/Issue" => {
                     #[allow(non_camel_case_types)]
-                    struct AddAuthenticatorSvc<T: Msg>(pub Arc<T>);
-                    impl<T: Msg> tonic::server::UnaryService<super::MsgAddAuthenticator> for AddAuthenticatorSvc<T> {
-                        type Response = super::MsgAddAuthenticatorResponse;
+                    struct IssueSvc<T: Msg>(pub Arc<T>);
+                    impl<T: Msg> tonic::server::UnaryService<super::MsgIssue> for IssueSvc<T> {
+                        type Response = super::MsgIssueResponse;
                         type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::MsgAddAuthenticator>,
+                            request: tonic::Request<super::MsgIssue>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).add_authenticator(request).await };
+                            let fut = async move { <T as Msg>::issue(&inner, request).await };
                             Box::pin(fut)
                         }
                     }
@@ -678,9 +730,8 @@ pub mod msg_server {
                     let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
-                        let inner = inner.0;
-                        let method = AddAuthenticatorSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
+                        let method = IssueSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,
@@ -695,20 +746,18 @@ pub mod msg_server {
                     };
                     Box::pin(fut)
                 }
-                "/bitsong.smartaccount.v1beta1.Msg/RemoveAuthenticator" => {
+                "/bitsong.fantoken.v1beta1.Msg/Mint" => {
                     #[allow(non_camel_case_types)]
-                    struct RemoveAuthenticatorSvc<T: Msg>(pub Arc<T>);
-                    impl<T: Msg> tonic::server::UnaryService<super::MsgRemoveAuthenticator>
-                        for RemoveAuthenticatorSvc<T>
-                    {
-                        type Response = super::MsgRemoveAuthenticatorResponse;
+                    struct MintSvc<T: Msg>(pub Arc<T>);
+                    impl<T: Msg> tonic::server::UnaryService<super::MsgMint> for MintSvc<T> {
+                        type Response = super::MsgMintResponse;
                         type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::MsgRemoveAuthenticator>,
+                            request: tonic::Request<super::MsgMint>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).remove_authenticator(request).await };
+                            let fut = async move { <T as Msg>::mint(&inner, request).await };
                             Box::pin(fut)
                         }
                     }
@@ -718,9 +767,8 @@ pub mod msg_server {
                     let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
-                        let inner = inner.0;
-                        let method = RemoveAuthenticatorSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
+                        let method = MintSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,
@@ -735,18 +783,18 @@ pub mod msg_server {
                     };
                     Box::pin(fut)
                 }
-                "/bitsong.smartaccount.v1beta1.Msg/SetActiveState" => {
+                "/bitsong.fantoken.v1beta1.Msg/Burn" => {
                     #[allow(non_camel_case_types)]
-                    struct SetActiveStateSvc<T: Msg>(pub Arc<T>);
-                    impl<T: Msg> tonic::server::UnaryService<super::MsgSetActiveState> for SetActiveStateSvc<T> {
-                        type Response = super::MsgSetActiveStateResponse;
+                    struct BurnSvc<T: Msg>(pub Arc<T>);
+                    impl<T: Msg> tonic::server::UnaryService<super::MsgBurn> for BurnSvc<T> {
+                        type Response = super::MsgBurnResponse;
                         type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::MsgSetActiveState>,
+                            request: tonic::Request<super::MsgBurn>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).set_active_state(request).await };
+                            let fut = async move { <T as Msg>::burn(&inner, request).await };
                             Box::pin(fut)
                         }
                     }
@@ -756,9 +804,158 @@ pub mod msg_server {
                     let max_encoding_message_size = self.max_encoding_message_size;
                     let inner = self.inner.clone();
                     let fut = async move {
-                        let inner = inner.0;
-                        let method = SetActiveStateSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
+                        let method = BurnSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/bitsong.fantoken.v1beta1.Msg/DisableMint" => {
+                    #[allow(non_camel_case_types)]
+                    struct DisableMintSvc<T: Msg>(pub Arc<T>);
+                    impl<T: Msg> tonic::server::UnaryService<super::MsgDisableMint> for DisableMintSvc<T> {
+                        type Response = super::MsgDisableMintResponse;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::MsgDisableMint>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut =
+                                async move { <T as Msg>::disable_mint(&inner, request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = DisableMintSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/bitsong.fantoken.v1beta1.Msg/SetMinter" => {
+                    #[allow(non_camel_case_types)]
+                    struct SetMinterSvc<T: Msg>(pub Arc<T>);
+                    impl<T: Msg> tonic::server::UnaryService<super::MsgSetMinter> for SetMinterSvc<T> {
+                        type Response = super::MsgSetMinterResponse;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::MsgSetMinter>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move { <T as Msg>::set_minter(&inner, request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = SetMinterSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/bitsong.fantoken.v1beta1.Msg/SetAuthority" => {
+                    #[allow(non_camel_case_types)]
+                    struct SetAuthoritySvc<T: Msg>(pub Arc<T>);
+                    impl<T: Msg> tonic::server::UnaryService<super::MsgSetAuthority> for SetAuthoritySvc<T> {
+                        type Response = super::MsgSetAuthorityResponse;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::MsgSetAuthority>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut =
+                                async move { <T as Msg>::set_authority(&inner, request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = SetAuthoritySvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/bitsong.fantoken.v1beta1.Msg/SetUri" => {
+                    #[allow(non_camel_case_types)]
+                    struct SetUriSvc<T: Msg>(pub Arc<T>);
+                    impl<T: Msg> tonic::server::UnaryService<super::MsgSetUri> for SetUriSvc<T> {
+                        type Response = super::MsgSetUriResponse;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::MsgSetUri>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move { <T as Msg>::set_uri(&inner, request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = SetUriSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,
@@ -776,9 +973,12 @@ pub mod msg_server {
                 _ => Box::pin(async move {
                     Ok(http::Response::builder()
                         .status(200)
-                        .header("grpc-status", "12")
-                        .header("content-type", "application/grpc")
-                        .body(empty_body())
+                        .header("grpc-status", tonic::Code::Unimplemented as i32)
+                        .header(
+                            http::header::CONTENT_TYPE,
+                            tonic::metadata::GRPC_CONTENT_TYPE,
+                        )
+                        .body(tonic::body::Body::empty())
                         .unwrap())
                 }),
             }
@@ -796,17 +996,7 @@ pub mod msg_server {
             }
         }
     }
-    impl<T: Msg> Clone for _Inner<T> {
-        fn clone(&self) -> Self {
-            Self(Arc::clone(&self.0))
-        }
-    }
-    impl<T: core::fmt::Debug> core::fmt::Debug for _Inner<T> {
-        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            write!(f, "{:?}", self.0)
-        }
-    }
     impl<T: Msg> tonic::server::NamedService for MsgServer<T> {
-        const NAME: &'static str = "bitsong.smartaccount.v1beta1.Msg";
+        const NAME: &'static str = "bitsong.fantoken.v1beta1.Msg";
     }
 }
