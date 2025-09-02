@@ -368,6 +368,14 @@ pub fn cosmwasm_to_proto_coins(
     coins.into_iter().map(|c| c.into()).collect()
 }
 
+impl From<Any> for layer_climb_proto::Any {
+    fn from(any: Any) -> Self {
+        layer_climb_proto::Any {
+            type_url: any.type_url,
+            value: any.value,
+        }
+    }
+}
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::Uint256;
