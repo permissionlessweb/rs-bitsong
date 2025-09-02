@@ -1,5 +1,12 @@
 # Bitsong Rust
 
+<div align="center">
+
+[![Bannger](/static/banner.png)]()
+
+</div>
+
+
 ## TODO
 - rust <-> python bindings (via: https://github.com/PyO3/pyo3)
 - demo webapp interacting with each command

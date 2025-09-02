@@ -6,3 +6,4 @@ members = [
     "rs-bitsong-derive",
     "bitsong-rs",
 ]
+exclude = ["static/banner.png"]
