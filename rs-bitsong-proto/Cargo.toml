@@ -28,6 +28,10 @@ bytes = "1.0"
 # for query
 serde = {version = "1.0", default-features = false, features = ["derive"]}
 
+# to implement From trait for common used client library
+layer-climb-proto = "0.7.3"
+
+
 # Optional dependencies
 tonic = { version = "0.14.1", optional = true, default-features = false, features = ["codegen"] }
 tonic-prost = { version = "0.14.1", optional = true, default-features = false }
