@@ -3,6 +3,7 @@ authors = [
     "Supanat Potiwarakorn <boss@osmosis.team>",
     "Justin Kilpatrick <justin@althea.net>",
     "Tony Arcieri <tony@iqlusion.io>",
+    "A Hardnett <hardnettt@proton.me>",
 ]
 edition = "2021"
 name = "proto-build"
