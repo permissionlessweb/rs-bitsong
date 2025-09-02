@@ -4,27 +4,41 @@ use rs_bitsong_derive::CosmwasmExt;
 #[derive(
     Clone, PartialEq, Eq, ::prost::Message, serde::Serialize, serde::Deserialize, CosmwasmExt,
 )]
-#[proto_message(type_url = "/osmosis.tokenfactory.v1beta1.QueryDenomsFromCreatorRequest")]
+#[proto_message(type_url = "/bitsong.fantoken.v1beta1.QueryFanTokenRequest")]
 #[proto_query(
-    path = "/osmosis.tokenfactory.v1beta1.Query/DenomsFromCreator",
-    response_type = QueryDenomsFromCreatorResponse
+    path = "/bitsong.fantoken.v1beta1.Query/FanToken",
+    response_type = QueryFanTokenResponse
 )]
-pub struct QueryDenomsFromCreatorRequest {
+pub struct QueryFanTokenRequest {
     #[prost(string, tag = "1")]
-    pub creator: ::prost::alloc::string::String,
+    pub denom: ::prost::alloc::string::String,
 }
+
 #[derive(
     Clone, PartialEq, Eq, ::prost::Message, serde::Serialize, serde::Deserialize, CosmwasmExt,
 )]
-#[proto_message(type_url = "/osmosis.tokenfactory.v1beta1.QueryDenomsFromCreatorResponse")]
-pub struct QueryDenomsFromCreatorResponse {
-    #[prost(string, repeated, tag = "1")]
-    pub denoms: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+#[proto_message(type_url = "/bitsong.fantoken.v1beta1.QueryFanTokenResponse")]
+pub struct QueryFanTokenResponse {
+    #[prost(message, optional, tag = "1")]
+    pub fantoken: ::core::option::Option<FanToken>,
+}
+
+#[derive(
+    Clone, PartialEq, Eq, ::prost::Message, serde::Serialize, serde::Deserialize, CosmwasmExt,
+)]
+#[proto_message(type_url = "/bitsong.fantoken.v1beta1.FanToken")]
+pub struct FanToken {
+    #[prost(string, tag = "1")]
+    pub denom: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub max_supply: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub minter: ::prost::alloc::string::String,
 }
 
 fn main() {
-    let _: QueryRequest<Empty> = QueryDenomsFromCreatorRequest {
-        creator: "osmo1sr9zm2pq3xrru7l7gz632t2rqs9caet9xulwvapcqagq9pytkcgqwfc3nk".to_string(),
+    let _: QueryRequest<Empty> = QueryFanTokenRequest {
+        denom: "ufantoken".to_string(),
     }
     .into();
 }

@@ -2,23 +2,34 @@ use cosmwasm_std::CosmosMsg;
 use rs_bitsong_derive::CosmwasmExt;
 
 #[derive(Clone, PartialEq, Eq, ::prost::Message, CosmwasmExt)]
-#[proto_message(type_url = "/osmosis.tokenfactory.v1beta1.MsgCreateDenom")]
-pub struct MsgCreateDenom {
+#[proto_message(type_url = "/bitsong.fantoken.v1beta1.MsgIssue")]
+pub struct MsgIssue {
     #[prost(string, tag = "1")]
-    pub sender: ::prost::alloc::string::String,
-    /// subdenom can be up to 44 "alphanumeric" characters long.
+    pub symbol: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
-    pub subdenom: ::prost::alloc::string::String,
+    pub name: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub max_supply: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub uri: ::prost::alloc::string::String,
+    #[prost(string, tag = "5")]
+    pub authority: ::prost::alloc::string::String,
+    #[prost(string, tag = "6")]
+    pub minter: ::prost::alloc::string::String,
 }
 
 fn main() {
     assert_eq!(
-        MsgCreateDenom::TYPE_URL,
-        "/osmosis.tokenfactory.v1beta1.MsgCreateDenom"
+        MsgIssue::TYPE_URL,
+        "/bitsong.fantoken.v1beta1.MsgIssue"
     );
-    let msg = MsgCreateDenom {
-        sender: "osmo1sr9zm2pq3xrru7l7gz632t2rqs9caet9xulwvapcqagq9pytkcgqwfc3nk".to_string(),
-        subdenom: "uxxx".to_string(),
+    let msg = MsgIssue {
+        symbol: "BTSG".to_string(),
+        name: "BitSong Token".to_string(),
+        max_supply: "1000000".to_string(),
+        uri: "https://example.com/fantoken".to_string(),
+        authority: "bitsong1authority".to_string(),
+        minter: "bitsong1minter".to_string(),
     };
 
     let _: CosmosMsg = msg.into();

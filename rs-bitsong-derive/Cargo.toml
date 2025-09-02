@@ -1,5 +1,5 @@
 [package]
-description = "Procedural macro for osmosis-std"
+description = "Procedural macro for rs-bitsong-proto"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 name = "rs-bitsong-derive"
