@@ -126,7 +126,6 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
 
 **SmartAccount Module:**
 - `QueryParamsRequest` - Query smartaccount module parameters
-- `QuerySettingRequest` - Query smartaccount settings by address
 
 #### Error Handling
 
@@ -146,13 +145,14 @@ This workspace uses careful feature management to avoid dependency conflicts:
 ```toml
 # Core proto crate with minimal dependencies but enable std
 rs-bitsong-proto = { default-features = false, features = ["std"] }
+bitsong-rs = { default-features = false }
 
 # SDK with specific cosmos-sdk-proto version to avoid conflicts
 cosmos-sdk-proto = { 
     version = "0.28.0", 
     default-features = false, 
     features = ["std"],
-    git = "https://github.com/permissionlessweb/rs-bitsong" 
+    git = "https://github.com/permissionlessweb/cosmos-rs" 
 }
 
 # Crypto dependencies with precise feature selection
@@ -161,8 +161,8 @@ k256 = { version = "0.13", default-features = false, features = ["ecdsa", "sha25
 
 **Key practices:**
 
-- **Use `default-features = false`** to avoid unnecessary dependency bloat
-- **Pin specific git commits** for cosmos-sdk-proto to ensure compatibility
+- **Always use `default-features = false`** to avoid unnecessary dependency bloat.
+- **Pin specific git commits** for cosmos-sdk-proto to ensure compatibility (ensure cosmwasm-std & prost dependencies are the same)
 - **Enable only required features** (`std`, `stargate`, etc.) to minimize conflicts
 - **Workspace resolver = "2"** for better dependency resolution across crates
 
@@ -182,13 +182,6 @@ k256 = { version = "0.13", default-features = false, features = ["ecdsa", "sha25
 rand_core = { version = "0.6", default-features = false }
 ```
 
-**Critical exclusions for WASM targets:**
-
-- ❌ **Never enable** `tonic`, `grpc`, `transport` features  
-- ❌ **Avoid** `tokio` runtime features in any dependency
-- ❌ **Don't use** `async-std` or other async runtimes
-- ✅ **Always use** `default-features = false`
-- ✅ **Enable only** `std`, `serde`, and crypto-specific features
 
 #### Frontend/Trunk Integration
 

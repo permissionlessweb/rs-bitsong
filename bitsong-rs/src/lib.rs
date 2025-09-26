@@ -10,7 +10,6 @@
 
 extern crate alloc;
 
-pub use cosmos_sdk_proto;
 pub use tendermint;
 
 pub mod cadence;
@@ -19,15 +18,15 @@ pub mod fantoken;
 pub mod smartaccount;
 
 // Re-exports from cosmrs-like structure
-pub use cosmos_sdk_proto::cosmos::base::v1beta1::{Coin, DecCoin};
+pub use rs_bitsong_proto::types::cosmos::base::v1beta1::{Coin, DecCoin};
 pub use tendermint::{account::Id as AccountId, chain::Id as ChainId, Hash};
 
 pub use error::{Error, Result};
 
 /// Bitsong-specific transaction building utilities
 pub mod tx {
-    pub use cosmos_sdk_proto::cosmos::tx::signing::v1beta1::SignMode;
-    pub use cosmos_sdk_proto::cosmos::tx::v1beta1::{
+    pub use rs_bitsong_proto::types::cosmos::tx::signing::v1beta1::SignMode;
+    pub use rs_bitsong_proto::types::cosmos::tx::v1beta1::{
         AuthInfo, Fee, ModeInfo, SignDoc, SignerInfo, Tx, TxBody, TxRaw,
     };
     pub use tendermint::block;
