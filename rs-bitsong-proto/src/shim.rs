@@ -4,8 +4,8 @@ use cosmwasm_std::StdResult;
 use serde::de;
 use serde::de::Visitor;
 
-use std::fmt;
-use std::str::FromStr;
+use core::fmt;
+use core::str::FromStr;
 
 #[derive(Clone, PartialEq, Eq, ::prost::Message, schemars::JsonSchema)]
 pub struct Timestamp {
